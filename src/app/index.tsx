@@ -1,20 +1,28 @@
-import { StyleSheet, View, Image} from 'react-native';
+import { StyleSheet, View, Image, Pressable} from 'react-native';
+import { useState } from 'react';
 
 export default function HomeScreen() {
+
+  const [dinoBottom, setDinoBottom] = useState(350);
+
+  const jump = () => {
+    console.log('Click Nobru apelão');
+    setDinoBottom(500);
+
+    setTimeout(() => {
+      setDinoBottom(350);
+    }, 700);
+  };
   return (
     <View style={styles.container}>
-      <View style={styles.gameContainer}>
+      <Pressable style={styles.gameContainer} onPress={jump}>
         <View style={styles.ground}></View>
-        <View style={styles.dino}>
+        <View style={[styles.dino, { bottom: dinoBottom }]}>
           <Image source={require('../../assets/images/dino.png')}
-            style={{
-            width: '100%',
-            height: '100%',
-            resizeMode: 'contain',
-            }}
+            style={styles.dinoImage}
           />
         </View>
-      </View>
+      </Pressable>
       </View> 
   );
 }
@@ -27,8 +35,9 @@ const styles = StyleSheet.create({
   },
   gameContainer: {
     flex: 1,
-    backgroundColor: '#fef222',
+    backgroundColor: '#ffffff',
     position: 'relative',
+    
   },
   ground: {
     position: 'absolute',
@@ -40,10 +49,14 @@ const styles = StyleSheet.create({
   },
   dino: {
     position: 'absolute',
-    bottom: 350,
     left: 40,
     width: 40,
     height: 40,
     backgroundColor: '#000',
-  }
+  },
+  dinoImage: {
+  width: 40,
+  height: 40,
+  resizeMode: 'contain',
+}
 });
