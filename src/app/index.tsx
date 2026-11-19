@@ -9,11 +9,13 @@ export default function HomeScreen() {
   const cactusRight = useRef(new Animated.Value(40)).current
 
     const moveCactus = () => {
+
+      Animated.loop(
       Animated.timing(cactusRight, {
         toValue: 1800,
         duration: 3000,
         useNativeDriver: false,
-      }).start();
+      })).start()
     };
 
     useEffect(() => {
@@ -49,13 +51,13 @@ export default function HomeScreen() {
         <View style={styles.ground}></View>
         <Animated.View style={[styles.cactus, {right: cactusRight}]}>
                   <Image 
-          source={require("../../assets/images/pênis-de-sorriso-erected-107203673.webp")}
+          source={require("@/assets/images/dino.png")}
           style={styles.cactusImage}
           />
         </Animated.View>
         <Animated.View style={[styles.dino, { bottom: dinoBottom }]}>
           <Image
-            source={require("../../assets/images/dino.png")}
+            source={require("@/assets/images/Dino.jpg")}
             style={styles.dinoImage}
           />
 
@@ -89,7 +91,6 @@ const styles = StyleSheet.create({
     left: 40,
     width: 40,
     height: 40,
-    backgroundColor: "#000",
   },
   dinoImage: {
     width: 40,
@@ -102,7 +103,6 @@ const styles = StyleSheet.create({
     right: 40,
     width: 20,
     height: 45,
-    backgroundColor: "#000",
   },
   cactusImage: {
     width: 32,
