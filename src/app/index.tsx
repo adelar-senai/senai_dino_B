@@ -1,27 +1,41 @@
-import { StyleSheet, View, Image, Pressable} from 'react-native';
-import { useState } from 'react';
+import { StyleSheet, View, Image, Pressable, Animated} from 'react-native';
+import { useRef } from 'react';
 
 export default function HomeScreen() {
 
-  const [dinoBottom, setDinoBottom] = useState(350);
+  const dinoBottom = useRef(new Animated.Value(352)).current
 
   const jump = () => {
     console.log('Click Nobru apelão');
-    setDinoBottom(500);
+    
+    Animated.sequence([
+      Animated.timing(
+      dinoBottom, {
+        toValue: 500,
+        duration: 300,
+        useNativeDriver: false
+      }
+    ),
+    Animated.delay(200),
+    Animated.timing(
+        dinoBottom, {
+          toValue: 352,
+          duration: 300,
+          useNativeDriver: false
+        }
+      )
+    ]).start()
 
-    setTimeout(() => {
-      setDinoBottom(350);
-    }, 700);
   };
   return (
     <View style={styles.container}>
       <Pressable style={styles.gameContainer} onPress={jump}>
         <View style={styles.ground}></View>
-        <View style={[styles.dino, { bottom: dinoBottom }]}>
+        <Animated.View style={[styles.dino, { bottom: dinoBottom }]}>
           <Image source={require('../../assets/images/dino.png')}
             style={styles.dinoImage}
           />
-        </View>
+        </Animated.View>
       </Pressable>
       </View> 
   );
