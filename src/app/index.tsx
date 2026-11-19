@@ -2,6 +2,7 @@ import { StyleSheet, View, Image} from 'react-native';
 
 export default function HomeScreen() {
   return (
+    
     <View style={styles.container}>
       <View style={styles.gameContainer}>
         <View style={styles.ground}></View>
