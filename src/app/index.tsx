@@ -44,6 +44,7 @@ export default function HomeScreen() {
     });
   };
   return (
+    
     <View style={styles.container}>
       <Pressable style={styles.gameContainer} onPress={jump}>
         <View style={styles.ground}></View>
