@@ -1,30 +1,33 @@
-import { StyleSheet, View, Image, Pressable, Animated } from "react-native";
-import { useRef, useState, useEffect, use } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Animated, Image, Pressable, StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
   const [isJumping, setIsJumping] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
 
   const dinoBottom = useRef(new Animated.Value(352)).current;
+  const cactusRight = useRef(new Animated.Value(40)).current;
 
-  const cactusRight = useRef(new Animated.Value(40)).current
+  const moveCactus = () => {
+    Animated.timing(cactusRight, {
+      toValue: 1800,
+      duration: 3000,
+      useNativeDriver: false,
+    }).start();
+  };
 
-    const moveCactus = () => {
-      Animated.timing(cactusRight, {
-        toValue: 1800,
-        duration: 3000,
-        useNativeDriver: false,
-      }).start();
-    };
+  useEffect(() => {
+    moveCactus();
+  }, []);
 
-    useEffect(() => {
-      moveCactus();
-    }, []);  
+  const play = () => {
+    setGameStarted(true);
+  };
 
   const jump = () => {
     console.log("Click Nobru apelão");
 
-
-    if(isJumping) return;
+    if (isJumping) return;
     setIsJumping(true);
 
     Animated.sequence([
@@ -44,25 +47,33 @@ export default function HomeScreen() {
     });
   };
   return (
-    
     <View style={styles.container}>
-      <Pressable style={styles.gameContainer} onPress={jump}>
-        <View style={styles.ground}></View>
-        <Animated.View style={[styles.cactus, {right: cactusRight}]}>
-                  <Image 
-          source={require("../../assets/images/pênis-de-sorriso-erected-107203673.webp")}
-          style={styles.cactusImage}
-          />
-        </Animated.View>
-        <Animated.View style={[styles.dino, { bottom: dinoBottom }]}>
-          <Image
-            source={require("../../assets/images/dino.png")}
-            style={styles.dinoImage}
-          />
-
-        </Animated.View>
-
-      </Pressable>
+      {gameStarted ? (
+        <Pressable style={styles.gameContainer} onPress={jump}>
+          <View style={styles.ground}></View>
+          <Animated.View style={[styles.cactus, { right: cactusRight }]}>
+            <Image
+              source={require("@/assets/images/pênis-de-sorriso-erected-107203673.webp")}
+              style={styles.cactusImage}
+            />
+          </Animated.View>
+          <Animated.View style={[styles.dino, { bottom: dinoBottom }]}>
+            <Image
+              source={require("@/assets/images/dino.png")}
+              style={styles.dinoImage}
+            />
+          </Animated.View>
+        </Pressable>
+      ) : (
+        <View>
+          <Pressable style={styles.playButton} onPress={play}>
+            <Image
+              source={require("@/assets/images/play_dino.png")}
+              style={styles.playButtonImage}
+            />
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 }
@@ -108,6 +119,20 @@ const styles = StyleSheet.create({
   cactusImage: {
     width: 32,
     height: 45,
-     resizeMode: "contain",
-  }
+    resizeMode: "contain",
+  },
+  playButton: {
+    position: "absolute",
+    alignSelf: "center",
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff00",
+  },
+  playButtonImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
+  },
 });
