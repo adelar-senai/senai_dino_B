@@ -7,8 +7,12 @@ export default function HomeScreen() {
   const dinoBottom = useRef(new Animated.Value(352)).current;
 
   const cactusRight = useRef(new Animated.Value(40)).current;
-  
-  const [cactusCount, setCactusCount] = useState(1)
+
+    const contadorCactus = Math.floor(Math.random() * 3)
+
+  const [cactusCount, setCactusCount] = useState(contadorCactus)
+
+
   const moveCactus = () => {
     const randomDelay = Math.floor(Math.random() * 600)
     Animated.sequence([
