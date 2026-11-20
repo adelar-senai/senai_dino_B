@@ -1,32 +1,44 @@
-import { StyleSheet, View, Image, Pressable, Animated } from "react-native";
-import { useRef, useState, useEffect, use } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Animated, Image, Pressable, StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
   const [isJumping, setIsJumping] = useState(false);
 
   const dinoBottom = useRef(new Animated.Value(352)).current;
 
-  const cactusRight = useRef(new Animated.Value(40)).current
-
-    const moveCactus = () => {
-
-      Animated.loop(
+  const cactusRight = useRef(new Animated.Value(40)).current;
+  
+  const randomDelay = Math.floor(Math.random() * (600 - 300) + 300)
+  
+  const moveCactus = () => {
+    Animated.sequence([
       Animated.timing(cactusRight, {
         toValue: 1800,
         duration: 3000,
         useNativeDriver: false,
-      })).start()
-    };
+      }),
+      Animated.timing(cactusRight, {
+        toValue:40,
+        duration: 1,
+        useNativeDriver: false
+      }),
+      Animated.delay(randomDelay),
+    ]).start(({finished}) => {
+      if(finished){
+        
+          moveCactus();
+        }
+      });
+  };
 
-    useEffect(() => {
-      moveCactus();
-    }, []);  
+  useEffect(() => {
+    moveCactus();
+  }, []);
 
   const jump = () => {
     console.log("Click Nobru apelão");
 
-
-    if(isJumping) return;
+    if (isJumping) return;
     setIsJumping(true);
 
     Animated.sequence([
@@ -49,10 +61,10 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <Pressable style={styles.gameContainer} onPress={jump}>
         <View style={styles.ground}></View>
-        <Animated.View style={[styles.cactus, {right: cactusRight}]}>
-                  <Image 
-          source={require("@/assets/images/dino.png")}
-          style={styles.cactusImage}
+        <Animated.View style={[styles.cactus, { right: cactusRight }]}>
+          <Image
+            source={require("@/assets/images/dino.png")}
+            style={styles.cactusImage}
           />
         </Animated.View>
         <Animated.View style={[styles.dino, { bottom: dinoBottom }]}>
@@ -60,9 +72,7 @@ export default function HomeScreen() {
             source={require("@/assets/images/Dino.jpg")}
             style={styles.dinoImage}
           />
-
         </Animated.View>
-
       </Pressable>
     </View>
   );
@@ -107,6 +117,6 @@ const styles = StyleSheet.create({
   cactusImage: {
     width: 32,
     height: 45,
-     resizeMode: "contain",
-  }
+    resizeMode: "contain",
+  },
 });
