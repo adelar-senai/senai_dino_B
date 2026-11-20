@@ -8,9 +8,9 @@ export default function HomeScreen() {
 
   const cactusRight = useRef(new Animated.Value(40)).current;
   
-  const randomDelay = Math.floor(Math.random() * (600 - 300) + 300)
-  
+  const [cactusCount, setCactusCount] = useState(1)
   const moveCactus = () => {
+    const randomDelay = Math.floor(Math.random() * 600)
     Animated.sequence([
       Animated.timing(cactusRight, {
         toValue: 1800,
@@ -58,14 +58,21 @@ export default function HomeScreen() {
     });
   };
   return (
+          
     <View style={styles.container}>
       <Pressable style={styles.gameContainer} onPress={jump}>
         <View style={styles.ground}></View>
-        <Animated.View style={[styles.cactus, { right: cactusRight }]}>
-          <Image
-            source={require("@/assets/images/dino.png")}
-            style={styles.cactusImage}
-          />
+
+        <Animated.View style={[styles.cactusGroup, { right: cactusRight }]}> 
+          {Array.from({ length: cactusCount }).map((_, index) => (
+            <View key={index} style={styles.cactus}>
+              <Image
+                source={require("@/assets/images/dino.png")}
+                style={styles.cactusImage}
+              />
+            </View>
+          ))}
+         
         </Animated.View>
         <Animated.View style={[styles.dino, { bottom: dinoBottom }]}>
           <Image
@@ -108,9 +115,6 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   cactus: {
-    position: "absolute",
-    bottom: 352,
-    right: 40,
     width: 20,
     height: 45,
   },
@@ -119,4 +123,10 @@ const styles = StyleSheet.create({
     height: 45,
     resizeMode: "contain",
   },
+   cactusGroup: {
+    position: "absolute",
+    bottom: 352,
+    flexDirection: "row",
+    alignItems: "flex-end"
+   },
 });
