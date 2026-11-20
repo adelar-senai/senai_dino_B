@@ -6,14 +6,30 @@ export default function HomeScreen() {
   const [gameStarted, setGameStarted] = useState(false);
 
   const dinoBottom = useRef(new Animated.Value(352)).current;
-  const cactusRight = useRef(new Animated.Value(40)).current;
 
+  const cactusRight = useRef(new Animated.Value(40)).current;
+  
+  const randomDelay = Math.floor(Math.random() * (600 - 300) + 300)
+  
   const moveCactus = () => {
-    Animated.timing(cactusRight, {
-      toValue: 1800,
-      duration: 3000,
-      useNativeDriver: false,
-    }).start();
+    Animated.sequence([
+      Animated.timing(cactusRight, {
+        toValue: 1800,
+        duration: 3000,
+        useNativeDriver: false,
+      }),
+      Animated.timing(cactusRight, {
+        toValue:40,
+        duration: 1,
+        useNativeDriver: false
+      }),
+      Animated.delay(randomDelay),
+    ]).start(({finished}) => {
+      if(finished){
+        
+          moveCactus();
+        }
+      });
   };
 
   useEffect(() => {
@@ -101,7 +117,6 @@ const styles = StyleSheet.create({
     left: 40,
     width: 40,
     height: 40,
-    backgroundColor: "#000",
   },
   dinoImage: {
     width: 40,
@@ -114,7 +129,6 @@ const styles = StyleSheet.create({
     right: 40,
     width: 20,
     height: 45,
-    backgroundColor: "#000",
   },
   cactusImage: {
     width: 32,
