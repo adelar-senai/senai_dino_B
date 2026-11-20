@@ -3,6 +3,7 @@ import { Animated, Image, Pressable, StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
   const [isJumping, setIsJumping] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
 
   const dinoBottom = useRef(new Animated.Value(352)).current;
 
@@ -35,6 +36,10 @@ export default function HomeScreen() {
     moveCactus();
   }, []);
 
+  const play = () => {
+    setGameStarted(true);
+  };
+
   const jump = () => {
     console.log("Click Nobru apelão");
 
@@ -58,23 +63,33 @@ export default function HomeScreen() {
     });
   };
   return (
-    
     <View style={styles.container}>
-      <Pressable style={styles.gameContainer} onPress={jump}>
-        <View style={styles.ground}></View>
-        <Animated.View style={[styles.cactus, { right: cactusRight }]}>
-          <Image
-            source={require("@/assets/images/dino.png")}
-            style={styles.cactusImage}
-          />
-        </Animated.View>
-        <Animated.View style={[styles.dino, { bottom: dinoBottom }]}>
-          <Image
-            source={require("@/assets/images/Dino.jpg")}
-            style={styles.dinoImage}
-          />
-        </Animated.View>
-      </Pressable>
+      {gameStarted ? (
+        <Pressable style={styles.gameContainer} onPress={jump}>
+          <View style={styles.ground}></View>
+          <Animated.View style={[styles.cactus, { right: cactusRight }]}>
+            <Image
+              source={require("@/assets/images/pênis-de-sorriso-erected-107203673.webp")}
+              style={styles.cactusImage}
+            />
+          </Animated.View>
+          <Animated.View style={[styles.dino, { bottom: dinoBottom }]}>
+            <Image
+              source={require("@/assets/images/dino.png")}
+              style={styles.dinoImage}
+            />
+          </Animated.View>
+        </Pressable>
+      ) : (
+        <View>
+          <Pressable style={styles.playButton} onPress={play}>
+            <Image
+              source={require("@/assets/images/play_dino.png")}
+              style={styles.playButtonImage}
+            />
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 }
@@ -118,6 +133,20 @@ const styles = StyleSheet.create({
   cactusImage: {
     width: 32,
     height: 45,
+    resizeMode: "contain",
+  },
+  playButton: {
+    position: "absolute",
+    alignSelf: "center",
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff00",
+  },
+  playButtonImage: {
+    width: "100%",
+    height: "100%",
     resizeMode: "contain",
   },
 });
