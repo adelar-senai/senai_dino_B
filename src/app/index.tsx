@@ -8,6 +8,19 @@ export default function HomeScreen() {
   const dinoBottom = useRef(new Animated.Value(352)).current;
 
   const cactusRight = useRef(new Animated.Value(40)).current;
+
+  const buttonSize = useRef(new Animated.Value(1)).current;
+
+  const titleRotation = useRef(new Animated.Value(0)).current;
+
+  const buttonInteraction = (scale: number) => {
+    Animated.spring(buttonSize, {
+      toValue: scale,
+      useNativeDriver: true,
+      speed: 15,
+      bounciness: 7
+    }).start();
+  }
   
   const randomDelay = Math.floor(Math.random() * (600 - 300) + 300)
   
@@ -52,7 +65,7 @@ export default function HomeScreen() {
         duration: 300,
         useNativeDriver: false,
       }),
-      Animated.delay(200),
+      Animated.delay(70),
       Animated.timing(dinoBottom, {
         toValue: 352,
         duration: 300,
@@ -69,7 +82,7 @@ export default function HomeScreen() {
           <View style={styles.ground}></View>
           <Animated.View style={[styles.cactus, { right: cactusRight }]}>
             <Image
-              source={require("@/assets/images/pênis-de-sorriso-erected-107203673.webp")}
+              source={require("@/assets/images/dino.png")}
               style={styles.cactusImage}
             />
           </Animated.View>
@@ -82,10 +95,16 @@ export default function HomeScreen() {
         </Pressable>
       ) : (
         <View>
-          <Pressable style={styles.playButton} onPress={play}>
-            <Image
+          <Pressable style={styles.playButton} onPress={play}
+            onHoverIn={() => buttonInteraction(0.90)}
+            onHoverOut={() => buttonInteraction(1)}
+          > 
+            <Animated.Image
               source={require("@/assets/images/play_dino.png")}
-              style={styles.playButtonImage}
+              style={[
+                styles.playButtonImage,
+                {transform: [{scale: buttonSize}]}
+              ]}
             />
           </Pressable>
         </View>
