@@ -94,7 +94,10 @@ export default function HomeScreen() {
           </Animated.View>
         </Pressable>
       ) : (
-        <View>
+        <View style={styles.home}>
+
+          <View style={styles.title}> SAFADOSSAURO </View>
+
           <Pressable style={styles.playButton} onPress={play}
             onHoverIn={() => buttonInteraction(0.90)}
             onHoverOut={() => buttonInteraction(1)}
@@ -155,7 +158,6 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   playButton: {
-    position: "absolute",
     alignSelf: "center",
     width: 200,
     height: 200,
@@ -168,4 +170,12 @@ const styles = StyleSheet.create({
     height: "100%",
     resizeMode: "contain",
   },
+  title: {
+    alignSelf: "center",
+    fontSize: 65,
+  },
+  home: {
+    alignItems: "center",
+    justifyContent: "center",
+  }
 });
