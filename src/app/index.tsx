@@ -2,6 +2,8 @@ import { useRef, useState, useEffect } from "react";
 import { Animated, Image, Pressable, StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
+  const screenRCorner = 2000;
+  const screenLCorner = 0;
   // Define o estado inicial dos obstaculos, X sendo a posição horizontal e count sendo a quantidade de cactus q vão aparecer de acorodo com o index
   const [obstacles, setObstacles] = useState([
     { id: 1, x: 400, count: 1 },
@@ -12,9 +14,22 @@ export default function HomeScreen() {
   // Função q faz os porras se moverem, ela retorna o array anterior MAPEADO pra o X (a posição) perder 5 pixels rsrs
   // O reticencias ali é pra pegar o bagulho de antes e não perder as outras propriedades do objeto, só alterar o X msm
   const moveObstacles = () => {
+    const randomGap = Math.floor(Math.random() * 300) + 300;
+
     setObstacles((prevObstacles) => {
+      const rightMostObstacle = Math.max(
+        ...prevObstacles.map((obstacle) => obstacle.x),
+      );
       return prevObstacles.map((obstacle) => {
-        return { ...obstacle, x: obstacle.x - 2 };
+        // newX é como o nome diz, a nova posição dos cactus guardadas numa variável
+        const newX = obstacle.x - 2;
+        // esse condicional tá dizendo: Se a nova posição dos cactos(newX) + a largura dos pixels de cada cacto for menor que a borda esquerda
+        // da tela, respawna os cactos no canto direito da tela denovo, se não, guarde o valor da posição deles na variavel newX
+        if (newX + obstacle.count * 32 <= screenLCorner) {
+          return { ...obstacle, x: (rightMostObstacle + randomGap) };
+        } else {
+          return { ...obstacle, x: newX };
+        }
       });
     });
   };
