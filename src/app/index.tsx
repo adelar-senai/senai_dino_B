@@ -10,6 +10,8 @@ export default function HomeScreen() {
     { id: 2, x: 800, count: 3 },
     { id: 3, x: 1200, count: 2 },
   ]);
+  const [isJumping, setIsJumping] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
 
   // Função q faz os porras se moverem, ela retorna o array anterior MAPEADO pra o X (a posição) perder 5 pixels rsrs
   // O reticencias ali é pra pegar o bagulho de antes e não perder as outras propriedades do objeto, só alterar o X msm
@@ -47,6 +49,10 @@ export default function HomeScreen() {
   const dinoBottom = useRef(new Animated.Value(352)).current;
 
   // Função do pulo
+  const play = () => {
+    setGameStarted(true);
+  };
+
   const jump = () => {
     console.log("Click Nobru apelão");
 
@@ -111,6 +117,32 @@ export default function HomeScreen() {
           />
         </Animated.View>
       </Pressable>
+      {gameStarted ? (
+        <Pressable style={styles.gameContainer} onPress={jump}>
+          <View style={styles.ground}></View>
+          <Animated.View style={[styles.cactus, { right: cactusRight }]}>
+            <Image
+              source={require("@/assets/images/pênis-de-sorriso-erected-107203673.webp")}
+              style={styles.cactusImage}
+            />
+          </Animated.View>
+          <Animated.View style={[styles.dino, { bottom: dinoBottom }]}>
+            <Image
+              source={require("@/assets/images/dino.png")}
+              style={styles.dinoImage}
+            />
+          </Animated.View>
+        </Pressable>
+      ) : (
+        <View>
+          <Pressable style={styles.playButton} onPress={play}>
+            <Image
+              source={require("@/assets/images/play_dino.png")}
+              style={styles.playButtonImage}
+            />
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 }
@@ -151,6 +183,20 @@ const styles = StyleSheet.create({
   cactusImage: {
     width: 32,
     height: 45,
+    resizeMode: "contain",
+  },
+  playButton: {
+    position: "absolute",
+    alignSelf: "center",
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff00",
+  },
+  playButtonImage: {
+    width: "100%",
+    height: "100%",
     resizeMode: "contain",
   },
 });
