@@ -1,8 +1,7 @@
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Animated, Image, Pressable, StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
-  const screenRCorner = 2000;
   const screenLCorner = 0;
   // Define o estado inicial dos obstaculos, X sendo a posição horizontal e count sendo a quantidade de cactus q vão aparecer de acorodo com o index
   const [obstacles, setObstacles] = useState([
@@ -16,11 +15,11 @@ export default function HomeScreen() {
   // Função q faz os porras se moverem, ela retorna o array anterior MAPEADO pra o X (a posição) perder 5 pixels rsrs
   // O reticencias ali é pra pegar o bagulho de antes e não perder as outras propriedades do objeto, só alterar o X msm
   const moveObstacles = () => {
-    const randomGap = Math.floor(Math.random() * 300) + 300;
+    const randomGap = Math.floor(Math.random() * 400) + 300;
 
     setObstacles((prevObstacles) => {
       const rightMostObstacle = Math.max(
-        ...prevObstacles.map((obstacle) => obstacle.x),
+        ...prevObstacles.map((obstacle) => obstacle.x + obstacle.count * 32),
       );
       return prevObstacles.map((obstacle) => {
         // newX é como o nome diz, a nova posição dos cactus guardadas numa variável
@@ -28,7 +27,12 @@ export default function HomeScreen() {
         // esse condicional tá dizendo: Se a nova posição dos cactos(newX) + a largura dos pixels de cada cacto for menor que a borda esquerda
         // da tela, respawna os cactos no canto direito da tela denovo, se não, guarde o valor da posição deles na variavel newX
         if (newX + obstacle.count * 32 <= screenLCorner) {
-          return { ...obstacle, x: (rightMostObstacle + randomGap) };
+          const randomCount = Math.floor(Math.random() * 3) + 1;
+          return {
+            ...obstacle,
+            x: rightMostObstacle + randomGap,
+            count: randomCount,
+          };
         } else {
           return { ...obstacle, x: newX };
         }
@@ -38,13 +42,14 @@ export default function HomeScreen() {
   // useEffect de cria pra rodar tudo no momento q a tela for ligada né, o interval é um nome pra função q vai botar um intervalo
   // pra rodar a cada 20ms o moveObstacles(), e o return é pra quando a tela for fechada ele limpar o intervalo, pra não ficar rodando no fundo
   useEffect(() => {
+    if (gameStarted) {
+      return;
+    }
     const interval = setInterval(() => {
       moveObstacles();
-    }, 5);
+    }, 6);
     return () => clearInterval(interval);
   }, []);
-
-  const [isJumping, setIsJumping] = useState(false);
 
   const dinoBottom = useRef(new Animated.Value(352)).current;
 
@@ -64,10 +69,10 @@ export default function HomeScreen() {
     Animated.sequence([
       Animated.timing(dinoBottom, {
         toValue: 500,
-        duration: 300,
+        duration: 350,
         useNativeDriver: false,
       }),
-      Animated.delay(200),
+      Animated.delay(70),
       Animated.timing(dinoBottom, {
         toValue: 352,
         duration: 300,
@@ -79,7 +84,7 @@ export default function HomeScreen() {
     });
   };
 
-  return (
+  return gameStarted ? (
     <View style={styles.container}>
       {/* Aqui esse pressable pega a tela inteira o click de qualquer plataforma, o 'onPress={jump}' diz que quando um click acontece, faça a função 'jump' */}
       <Pressable style={styles.gameContainer} onPress={jump}>
@@ -103,7 +108,7 @@ export default function HomeScreen() {
             {Array.from({ length: obstacle.count }).map((_, index) => (
               <Image
                 key={index}
-                source={require("@/assets/images/dino.png")}
+                source={require("@/assets/images/Dino.jpg")}
                 style={styles.cactusImage}
               />
             ))}
@@ -112,37 +117,20 @@ export default function HomeScreen() {
 
         <Animated.View style={[styles.dino, { bottom: dinoBottom }]}>
           <Image
-            source={require("@/assets/images/Dino.jpg")}
+            source={require("@/assets/images/dino.png")}
             style={styles.dinoImage}
           />
         </Animated.View>
       </Pressable>
-      {gameStarted ? (
-        <Pressable style={styles.gameContainer} onPress={jump}>
-          <View style={styles.ground}></View>
-          <Animated.View style={[styles.cactus, { right: cactusRight }]}>
-            <Image
-              source={require("@/assets/images/pênis-de-sorriso-erected-107203673.webp")}
-              style={styles.cactusImage}
-            />
-          </Animated.View>
-          <Animated.View style={[styles.dino, { bottom: dinoBottom }]}>
-            <Image
-              source={require("@/assets/images/dino.png")}
-              style={styles.dinoImage}
-            />
-          </Animated.View>
-        </Pressable>
-      ) : (
-        <View>
-          <Pressable style={styles.playButton} onPress={play}>
-            <Image
-              source={require("@/assets/images/play_dino.png")}
-              style={styles.playButtonImage}
-            />
-          </Pressable>
-        </View>
-      )}
+    </View>
+  ) : (
+    <View style={{flex: 1}}>
+      <Pressable style={styles.playButton} onPress={play}>
+        <Image
+          source={require("@/assets/images/play_dino.png")}
+          style={styles.playButtonImage}
+        />
+      </Pressable>
     </View>
   );
 }
@@ -193,6 +181,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ffffff00",
+    top: 400,
   },
   playButtonImage: {
     width: "100%",
