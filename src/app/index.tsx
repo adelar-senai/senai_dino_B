@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Animated, Image, Pressable, StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
@@ -9,6 +9,8 @@ export default function HomeScreen() {
     { id: 2, x: 800, count: 3 },
     { id: 3, x: 1200, count: 2 },
   ]);
+  const [isJumping, setIsJumping] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
 
   // Função q faz os porras se moverem, ela retorna o array anterior MAPEADO pra o X (a posição) perder 5 pixels rsrs
   // O reticencias ali é pra pegar o bagulho de antes e não perder as outras propriedades do objeto, só alterar o X msm
@@ -17,7 +19,7 @@ export default function HomeScreen() {
 
     setObstacles((prevObstacles) => {
       const rightMostObstacle = Math.max(
-        ...prevObstacles.map((obstacle) => (obstacle.x + (obstacle.count * 32))),
+        ...prevObstacles.map((obstacle) => obstacle.x + obstacle.count * 32),
       );
       return prevObstacles.map((obstacle) => {
         // newX é como o nome diz, a nova posição dos cactus guardadas numa variável
@@ -25,10 +27,14 @@ export default function HomeScreen() {
         // esse condicional tá dizendo: Se a nova posição dos cactos(newX) + a largura dos pixels de cada cacto for menor que a borda esquerda
         // da tela, respawna os cactos no canto direito da tela denovo, se não, guarde o valor da posição deles na variavel newX
         if (newX + obstacle.count * 32 <= screenLCorner) {
-          const randomCount = Math.floor(Math.random() * 3) + 1
-          return { ...obstacle, x: (rightMostObstacle + randomGap ), count: randomCount };
+          const randomCount = Math.floor(Math.random() * 3) + 1;
+          return {
+            ...obstacle,
+            x: rightMostObstacle + randomGap,
+            count: randomCount,
+          };
         } else {
-          return { ...obstacle, x: newX};
+          return { ...obstacle, x: newX };
         }
       });
     });
@@ -36,17 +42,22 @@ export default function HomeScreen() {
   // useEffect de cria pra rodar tudo no momento q a tela for ligada né, o interval é um nome pra função q vai botar um intervalo
   // pra rodar a cada 20ms o moveObstacles(), e o return é pra quando a tela for fechada ele limpar o intervalo, pra não ficar rodando no fundo
   useEffect(() => {
+    if (gameStarted) {
+      return;
+    }
     const interval = setInterval(() => {
       moveObstacles();
-    }, 6  );
+    }, 6);
     return () => clearInterval(interval);
   }, []);
-
-  const [isJumping, setIsJumping] = useState(false);
 
   const dinoBottom = useRef(new Animated.Value(352)).current;
 
   // Função do pulo
+  const play = () => {
+    setGameStarted(true);
+  };
+
   const jump = () => {
     console.log("Click Nobru apelão");
 
@@ -73,7 +84,7 @@ export default function HomeScreen() {
     });
   };
 
-  return (
+  return gameStarted ? (
     <View style={styles.container}>
       {/* Aqui esse pressable pega a tela inteira o click de qualquer plataforma, o 'onPress={jump}' diz que quando um click acontece, faça a função 'jump' */}
       <Pressable style={styles.gameContainer} onPress={jump}>
@@ -110,6 +121,15 @@ export default function HomeScreen() {
             style={styles.dinoImage}
           />
         </Animated.View>
+      </Pressable>
+    </View>
+  ) : (
+    <View style={{flex: 1}}>
+      <Pressable style={styles.playButton} onPress={play}>
+        <Image
+          source={require("@/assets/images/play_dino.png")}
+          style={styles.playButtonImage}
+        />
       </Pressable>
     </View>
   );
@@ -151,6 +171,21 @@ const styles = StyleSheet.create({
   cactusImage: {
     width: 32,
     height: 45,
+    resizeMode: "contain",
+  },
+  playButton: {
+    position: "absolute",
+    alignSelf: "center",
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff00",
+    top: 400,
+  },
+  playButtonImage: {
+    width: "100%",
+    height: "100%",
     resizeMode: "contain",
   },
 });
